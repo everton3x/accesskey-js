@@ -40,6 +40,16 @@ accesskey({
 
 ```
 
+See de `example` directory to a basic and advanced samples of use.
+
+To run examples, does:
+
+```
+cd examples/basic #or cd examples/advanced
+npm install
+npm run dev --host
+```
+
 ## Hotkey assignment
 
 To assign a shortcut key to some html element, simply add the [accesskey html attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey) with the shortcut key as supported by HotKeys.js:
