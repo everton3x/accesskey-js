@@ -1,0 +1,27 @@
+{
+  "name": "accesskey-js",
+  "version": "1.0.0",
+  "main": "accesskey.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["hotkey", "hotkeys", "key", "keys", "keyboard", "shortcut", "shortcuts", "keypress", "accesskey", "accesskeys"],
+  "homepage": "https://github.com/everton3x/accesskey-js#readme",
+  "bugs": {
+    "url": "https://github.com/everton3x/accesskey-js/issues"
+  },
+  "author": {
+    "name": "Everton da Rosa",
+    "url": "https://github.com/everton3x",
+    "email": "everton3x@gmail.com"
+  },
+  "license": "MIT",
+  "description": "Easily and quickly assign shortcut keys to your web applications.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/everton3x/accesskey-js.git"
+  },
+  "dependencies": {
+    "hotkeys-js": "^3.13.7"
+  }
+}
