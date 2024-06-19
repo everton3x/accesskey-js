@@ -1,4 +1,4 @@
-import hotkeys from 'hotkeys-js';
+import hotkeys from '../hotkeys-js/dist/hotkeys.esm.js';
 
 /**
  * Initializes accesskey functionality on the webpage.
@@ -36,18 +36,15 @@ export default function accesskey(config) {
 
     /* If config.handler not defined, set it to default value.
      * 
-     * Default handler function is a simple click event if element isa a button html tag, or a link, redirect to href url.
+     * Default handler function is a simple click event if element is a button html tag or a link.
      */
     if (!config.hasOwnProperty('handler')) {
         logger('Accesskey handler not specified! Using default.', 'warning');
         config.handler = function (event, element) {
             event.preventDefault();
-            if (element.tagName === 'BUTTON') {
+            if (element.tagName === 'BUTTON' || element.tagName === 'A') {
+                logger('Handler called for element: ' + element.tagName, 'info');
                 element.click();
-            }
-
-            if (element.tagName === 'A') {
-                window.location = element.href;
             }
         };
     }
@@ -85,6 +82,7 @@ export default function accesskey(config) {
 
         // If config.extra is defined, call it on the element that has the shortcut defined.
         if (config.extra) {
+            logger('Extra handler called!', 'info');
             config.extra(element);
         }
     }
