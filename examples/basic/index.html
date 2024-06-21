@@ -1,21 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AccessKey.js basic example</title>
-</head>
-<body>
-    <p>
-        <a accesskey="ctrl+1" href="https://site.to.go/">Site to go! (CTRL+1)</a>
-    </p>
-    <p>
-        <a accesskey="ctrl+2" href="javascript:alert('Hello link!');">Click me! (CTRL+2)</a>
-    </p>
-    <p>
-        <button accesskey="ctrl+3" onclick="alert('Hello button!');">Click me! (CTRL+3)</button>
-    </p>
 
-    <script type="module" src="app.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessKey.js v2 Basic Example</title>
+</head>
+
+
+<body accesskey-context>
+  <div>
+    <p>Basic example.</p>
+    <p>
+      <a accesskey="f2" onclick="alert('You are pressed F2 globally!')">Press F2 to see message.</a>
+    </p>
+    <p><a accesskey="f3" onclick="alert('You are pressed F3 globally!')">Press F3 to see message.</a></p>
+    <p><a accesskey="f1" onclick="alert('You are pressed F1 globally!')">Press F1 to see message.</a></p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
 </body>
+
+
+<!-- <body accesskey-context>
+  <div>
+    <p>Basic example.</p>
+    <p>
+      <a accesskey="f2" onclick="alert('You are pressed F2 globally!')">Press F2 to see message.</a>
+    </p>
+    <p><a accesskey="f3" onclick="alert('You are pressed F3 globally!')">Press F3 to see message.</a></p>
+    <p><a accesskey="f1" onclick="alert('You are pressed F1 globally!')">Press F1 to see message.</a></p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body> -->
+
+
+<!-- <body accesskey-context>
+  <div>
+    <p>Another splitter for element.</p>
+    <p>
+      <a accesskey="alt-e" accesskey-splitter="-" onclick="alert('You are pressed Alt + e globally!')">Press Alt + e to see message.</a>
+    </p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body> -->
+
+<!-- <body accesskey-context accesskey-splitter=" ">
+  <div>
+    <p>Another splitter to context.</p>
+    <p>
+      <button accesskey="alt e" onclick="alert('You are pressed Alt + e globally!')">Press Alt + e to see message.</button>
+      <button accesskey="ctrl e" onclick="alert('You are pressed Ctrl + e globally!')">Press Ctrl + e to see message.</button>
+    </p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body> -->
+
+
+<!-- <body accesskey-context accesskey-handler="contextHandler">
+  <div>
+    <p>Another handler</p>
+    <p>
+      <button accesskey="ctrl+0">Press Ctrl + 0 to context registered handler.</button>
+      <button accesskey="ctrl+1" accesskey-handler="registeredHandler">Press Ctrl + 1 to element registered handler.</button>
+      <button accesskey="ctrl+2" accesskey-handler="globalHandler">Press Ctrl + 2 to global handler.</button>
+    </p>
+  </div>
+
+  <script>
+    function globalHandler(event, element) {
+      alert('You are pressed Ctrl + 2!');
+    }
+    function registeredHandler(event, element) {
+      alert('You are pressed Ctrl + 1!');
+    }
+    function contextHandler(event, element) {
+      alert('You are pressed Ctrl + 0!');
+    }
+  </script>
+  <script type="module" src="/main.js"></script>
+</body> -->
+
+
+<!-- <body accesskey-context>
+  <div>
+    <p>Ignore handler accesskey. Use browser accesskey.</p>
+    <p>
+      <button accesskey="f3" onclick="alert('You are pressed F3!')">Press F3 to handler.</button>
+      <button accesskey="f4" accesskey-ignore>Press F4 to open address bar.</button>
+      <button accesskey="f5" onclick="alert('You are pressed F5!')">Press F5 to handler.</button>
+    </p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body> -->
+
 </html>

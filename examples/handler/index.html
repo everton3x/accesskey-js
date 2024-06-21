@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessKey.js v2 Change Handler Example</title>
+</head>
+
+
+<body accesskey-context accesskey-handler="contextHandler">
+  <div>
+    <p>Another handler</p>
+    <p>
+      <button accesskey="ctrl+0">Press Ctrl + 0 to context registered handler.</button>
+      <button accesskey="ctrl+1" accesskey-handler="registeredHandler">Press Ctrl + 1 to element registered handler.</button>
+      <button accesskey="ctrl+2" accesskey-handler="globalHandler">Press Ctrl + 2 to global handler.</button>
+    </p>
+  </div>
+
+  <script>
+    function globalHandler(event, element) {
+      alert('You are pressed Ctrl + 2!');
+    }
+    function registeredHandler(event, element) {
+      alert('You are pressed Ctrl + 1!');
+    }
+    function contextHandler(event, element) {
+      alert('You are pressed Ctrl + 0!');
+    }
+  </script>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>

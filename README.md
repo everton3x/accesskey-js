@@ -5,9 +5,7 @@ Easily and quickly assign shortcut keys to your web applications.
 
 ## Dependencies
 
-**AccessKey.js** depends of the [HotKeys.js](https://www.npmjs.com/package/hotkeys-js) javascript library.
-
-> HotKeys.js is an input capture library with some very special features, it is easy to pick up and use, has a reasonable footprint (~6kB) (gzipped: 2.8kB), and has no dependencies. It should not interfere with any JavaScript libraries or frameworks.
+Since version 2.x, **AccessKey.js** does not depend on any other package.
 
 ## Installation
 
@@ -23,36 +21,35 @@ To initialize **AccesKey.js** in your application, import the library and call t
 import accesskey from 'accesskey-js';
 
 // Configuration default.
-accesskey();
+accesskey().init();
 
-// or
+// or (with all available options)
 
-accesskey({
-    debug: true,
-    handler: function(event, element){
-        // event.preventDefault();
-        // other code here!
-    },
-    extra: function(element){
-        // to something...
-    }
-});
+accesskey().setGlobalHandler(function(event, element, context){}).registerHandler('handlerName', function(event, element, context){}).setGlobalSplitter('');
 
 ```
 
-See de `example` directory to a basic and advanced samples of use.
+As of version 2.0.0, all configuration is done directly in the HTML code through `accesskey-*` attributes.
+
+See de `example` directory to samples of use.
 
 To run examples, does:
 
 ```
-cd examples/basic #or cd examples/advanced
+cd examples/basic #or another sample directory
 npm install
 npm run dev --host
 ```
 
+**AccessKey.js** needs two html attributes to work: `accesskey-context` and `accesskey`.
+
+`accesskey-context` must be assigned to the context (or several contexts) in which the shortcuts will work. For example: shortcuts that must work on the entire page, the context must be the body (`<body accesskey-context>`). A shortcut that should only work on a specific form must be in the form context (`<form accesskey-context>`). Theoretically, any HTML element can be declared a context with `accesskey-context`, however, the context is identified as the focus location of the web page, so normally body and forms will be contexts.
+
+`accesskey` defines which html element the shortcut key will be linked to and the attribute value specifies which shortcut key will be used. Only accesskey in child elements of contexts are considered by **AccessKey.js**.
+
 ## Hotkey assignment
 
-To assign a shortcut key to some html element, simply add the [accesskey html attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey) with the shortcut key as supported by HotKeys.js:
+To assign a shortcut key to some html element, simply add the [accesskey html attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey) with the shortcut key:
 
 ```html
 <button accesskey="ctrl+g">Click me!</button>
@@ -61,57 +58,85 @@ To assign a shortcut key to some html element, simply add the [accesskey html at
 
 In this example, when pressing ctrl+g, a [click](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event) will be performed on the button. If we press ctrl+a, the page will be redirected to https://site.to.go.
 
+## Supported keys
+
+The supported shortcuts are:
+
+- alphanumeric keys ([0-9a-Z]);
+- F1 ~ F12;
+- Enter;
+- Esc;
+- Symbol keys (+, -, *, /, etc.);
+- Any combination of the above keys with the ctrl, alt, shift and meta modifier keys.
+
 For more details on this behavior, read the [Default Handler section](#default-handler).
 
-## Default Handler
+## Handler
 
 The default handler performs the following behavior:
 
-If the element triggered by the hotkey is a button (`button` html tag), a click will be triggered on the element;
+The default behavior when triggering a hotkey is to fire the [click event](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event) on the element to which the hotkey is associated ([stopPropagatio()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation) and [preventeDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault) are also fired before the click).
 
-If it is a link (`a` html tag), the web page will be redirected to the address of the element's `href` attribute.
+The handler can be changed at the element and context level by adding the `accesskey-handler="handlerName"` attribute to the element or context:
 
-However, you can provide a custom handler through `config.handler`.
+```html
+<div accesskey-context accesskey-handler="contextLevelHandler">
+    <button id="btn1" accesskey="ctrl+1">
+    <button id="btn2" accesskey="ctrl+2" accesskey-handler="elementLevelHandler">
+</div>
+```
 
-This handler must be a `function` that takes two parameters (`event` and `element`).
+In the example above, `#btn1` will inherit the context handler (`contextLevelHandler`), while `#btn2` has its own defined handler (`elementLevelHandler`).
 
-`event` corresponds to the [javascript event](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events).
+The value passed to the `accesskey-handler` attribute must be that of a javascript function. This function can be registered with `.registerHandler()` before `.init()` or it can be in global scope.
 
-`element` is the javascript object of the hotkey target element.
+**AccessKey.js**, first searches for custom handler among those that are registered, if not, searches in the global scope, if not, uses the default handler (which can be modified by `.setGlobalHandler()` before `.init()`.
 
-**An important warning: don't forget to fire [event.preventDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault) in your custom handler (if you want to avoid the default hotkey behavior).**
+The precedence between handlers is: `element` -> `context` -> `global scope` -> `default handler`.
 
-## Browser support
+`.setGlobalHandler()` must receive a handler function as an argument.
 
-Currently, **AccessKey.js** has been tested on the *Edge browser*. However, *HotKeys.js* has been tested on the following browsers:
+`.registerHandler()` must receive as its first argument the name of the handler (used in the `accesskey-handler` attribute) and in the second argument a handler function.
 
-- Internet Explorer 6+
-- Safari
-- Firefox
-- Chrome
+Handler functions must receive the following 3 arguments, in order:
 
-**AccessKey.js** only uses javascript code (Vanilla JS), so it should work properly in the browsers listed by *HotKeys.js*.
-
-## Supported keys
-
-*HotKeys.js* understands the following modifiers: ⇧, shift, option, ⌥, alt, ctrl, control, command, and ⌘.
-
-The following special keys can be used for shortcuts: backspace, tab, clear, enter, return, esc, escape, space, up, down, left, right, home, end, pageup, pagedown, del, delete, f1 through f19, num_0 through num_9, num_multiply, num_add, num_enter, num_subtract, num_decimal, num_divide.
-
-⌘ Command() ⌃ Control ⌥ Option(alt) ⇧ Shift ⇪ Caps Lock(Capital) ↩︎ return/Enter space
+`event`: javascript [click event](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event) object;
+`element`: the html element to which the shortcut key is associated (element that receives the `accesskey` attribute);
+`context`: the element that represents the context (element that receives the `accesskey-context` attribute);
 
 ## Config options
 
-**AccessKey.js** can receive a javascript object with configuration options. The configuration options are as follows:
+**AccessKey.js** has a dual configuration model:
 
-`debug` (default: `false`)
-: If `true`, debug messages are writing to console.
+Some configurations are done through methods called on the main `accesskey()` function and before the `init()` method.
 
-`handler` (default: see [Default Handler section](#default-handler))
-: The handler triggered on hotkey dispatched.
+However, most configurations are made directly in the html using the `accesskey` and `accesskey-*` attributes.
 
-`extra` (dafault `false`)
-: If defined, it is a JavaScript function that can do anything you want. Receives `element` as a parameter.
+`.setGlobalSplitter(string)`: Sets the hotkey separator. The default separator is `+`. The default when configuring hotkeys is the `modifier+key` format, as in `ctrl+f2`. However, if the `+` key is used in combination with a modifier key (`ctrl`, `shift`, `alt`, `meta`), the separator needs to be modified as well. Then, the `setGlobalSplitter()` method modifies the global default splitter.
+
+`registerHandler(string handlername, function (event, element, context){})`: Defines a handler to be used at the element and/or context level.
+
+`setGlobalHandler(function (event, element, context){})`: changes de default global handler.
+
+In addition to these methods (which must be called after `accesskey()` and before `init()`), other configurations are made using the following attributes:
+
+`accesskey`: assigned to each element to which the shortcut key will be linked. It must receive as value the key or combination of shortcut keys such as `accesskey="a"`, `accesskey="f3"`, `accesskey="ctrl+1"`, `accesskey="alt+shift+f5"`, `accesskey="shift+ctrl+alt+g"`, etc.
+
+`accesskey-context`: It must be assigned to each of the elements that represent context. Each context is a container that has one or more elements with an assigned `accesskey` and which will be activated depending on the focus of the web page.
+
+`accesskey-ignore`: allows you to mark a certain element of a context to be ignored when assigning shortcut keys, causing the browser's default behavior to be executed for the `accesskey` attribute.
+
+`accesskey-no-stop-propagation`: disable the [stopPropagation()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation) call for the element or context that receives the attribute.
+
+`accesskey-no-prevent-default`: disable the [preventDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault) call for the element or context that receives the attribute.
+
+`accesskey-handler`: defines a custom handler for the element or context. More details in section [#handler].
+
+`accesskey-splitter`: defines a custom separator for the element or context. More details in `setGlobalSplitter()`.
+
+## Browser support
+
+**AccessKey.js** only uses javascript code (Vanilla JS), so it should work properly in the modern browsers.
 
 ## Contributing
 

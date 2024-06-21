@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessKey.js v2 Accesskey splitter Example</title>
+</head>
+
+<body accesskey-context accesskey-splitter=" ">
+  <div>
+    <p>Another splitter to context.</p>
+    <p>
+      <button accesskey="alt e" onclick="alert('You are pressed Alt + e globally!')">Press Alt + e to see message.</button>
+      <!-- This button are a diferent splitter whitin the same context. -->
+      <button accesskey="ctrl-e" accesskey-splitter="-" onclick="alert('You are pressed Ctrl + e globally!')">Press Ctrl + e to see message.</button>
+    </p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+
+
+
+</html>

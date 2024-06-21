@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessKey.js v2 Basic Example</title>
+</head>
+
+<body accesskey-context>
+  <div>
+    <p>Ignore handler accesskey. Use browser accesskey.</p>
+    <p>
+      <button accesskey="f3" onclick="alert('You are pressed F3!')">Press F3 to handler.</button>
+      <button accesskey="f4" accesskey-ignore>Press F4 to open address bar.</button>
+      <button accesskey="f5" onclick="alert('You are pressed F5!')">Press F5 to handler.</button>
+    </p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>

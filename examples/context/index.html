@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessKey.js v2 Context Example</title>
+</head>
+
+<body accesskey-context>
+  <div>
+    <p>This are hotkeys globally.</p>
+    <p>
+      <a accesskey="f2" onclick="alert('You are pressed F2 globally!')">Press F2 to see message.</a>
+    </p>
+    <p><a accesskey="f3" onclick="alert('You are pressed F3 globally!')">Press F3 to see message.</a></p>
+    <p><a accesskey="f1" onclick="alert('You are pressed F1 globally!')">Press F1 to see message.</a></p>
+  </div>
+
+  <form accesskey-context>
+    <p>This hotkeys only triggered if focus is in this form.</p>
+    <div>
+      <input type="text" placeholder="Put the cursor here to activate this context." size="40">
+      <br>
+      <button type="button" accesskey="f2" onclick="alert('You are pressed F2 on de form!')">Press F2 to see message.</button>
+      <button type="button" accesskey="f3" onclick="alert('You are pressed F3 on de form!')">Press F3 to see message.</button>
+      <p>
+        <button type="button" accesskey="ctrl+a" onclick="alert('You are pressed ctrl+a on de form!')">Press Ctrl+A to see message.</button>
+      </p>
+    </div>
+  </form>
+
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
