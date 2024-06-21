@@ -1,6 +1,6 @@
 {
   "name": "accesskey-js",
-  "version": "2.0.0-dev",
+  "version": "2.0.0-rc",
   "main": "accesskey.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
