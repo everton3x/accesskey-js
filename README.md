@@ -69,7 +69,7 @@ The supported shortcuts are:
 - Symbol keys (+, -, *, /, etc.);
 - Any combination of the above keys with the ctrl, alt, shift and meta modifier keys.
 
-For more details on this behavior, read the [Default Handler section](#default-handler).
+For more details on this behavior, read the [Handler section](#handler).
 
 ## Handler
 
