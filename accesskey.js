@@ -1,91 +1,182 @@
-import hotkeys from '../hotkeys-js/dist/hotkeys.esm.js';
+export default function accesskey() {
 
-/**
- * Initializes accesskey functionality on the webpage.
- *
- * @param {Object} config - An optional configuration object.
- * @param {boolean} [config.debug=false] - Whether to enable debug logging.
- * @param {function} [config.handler=defaultHandler] - The function to handle shortcut key events.
- * @param {function} [config.extra=false] - An optional function to perform additional actions on elements with shortcut keys.
- * @return {undefined} This function does not return a value.
- */
-export default function accesskey(config) {
-
-    /**
-     * Logs a message to the console if the debug mode is enabled.
-     *
-     * @param {string} message - The message to be logged.
-     * @param {string} [type='log'] - The type of log message to be displayed. Default is 'log'.
-     * @return {undefined} This function does not return a value.
-     */
-    const logger = function (message, type = 'log') {
-        if (config.debug) {
-            console[type](message);
-        }
+    const config = {
+        handler: (event, element, context) => {
+            element.click();
+        },
+        splitter: '+',
     };
 
-    // If config not defined, set it to an empty object. Necessary to next steps.
-    if (!config) {
-        config = {};
+    const handlers = {};
+
+    function setGlobalSplitter(splitter) {
+        config.splitter = splitter;
+        return this;
     }
 
-    // If config.debug not defined, set it to default value.
-    if (!config.hasOwnProperty('debug')) {
-        config.debug = false;
+    function registerHandler(name, fn) {
+        handlers[name] = fn;
+        return this;
     }
 
-    /* If config.handler not defined, set it to default value.
-     * 
-     * Default handler function is a simple click event if element is a button html tag or a link.
-     */
-    if (!config.hasOwnProperty('handler')) {
-        logger('Accesskey handler not specified! Using default.', 'warning');
-        config.handler = function (event, element) {
-            event.preventDefault();
-            if (element.tagName === 'BUTTON' || element.tagName === 'A') {
-                logger('Handler called for element: ' + element.tagName, 'info');
-                element.click();
+    function getRegisteredHandler(name) {
+        return handlers[name] || null;
+    };
+
+    function isDescendantOfInternalContext(element) {
+        let current = element.parentElement;
+        while (current) {
+            if (current.hasAttribute('accesskey-context')) {
+                return current;
             }
-        };
-    }
-
-    /*
-     * If config.extra not defined, set it to default value.
-     * 
-     * Extra is a function that can do anything on the element that has the shortcut defined.
-     * 
-     * You can, for example, add a tag to the element to display the shortcut key.
-     */
-    if (!config.hasOwnProperty('extra')) {
-        logger('Extra handler not specified! Nothing to do.', 'warning');
-        config.extra = false;
-    }
-
-    logger('accesskey loaded!', 'info');
-    logger(config, 'debug');
-
-    let elements = window.document.querySelectorAll('[accesskey]');
-    logger(elements, 'debug');
-
-    // Iterate through elements that have the html accesskey attribute defined.
-    for (let i = 0; i < elements.length; i++) {
-        let element = elements[i];
-        let key = element.getAttribute('accesskey');
-
-        logger(element, 'debug');
-
-        // Uses the hotkeys library to assign the shortcut keys defined in the element's accesskey attribute.
-        hotkeys(key, function (event) {
-            config.handler(event, element);
-        });
-        logger('accesskey binded to ' + key, 'info');
-
-        // If config.extra is defined, call it on the element that has the shortcut defined.
-        if (config.extra) {
-            logger('Extra handler called!', 'info');
-            config.extra(element);
+            current = current.parentElement;
         }
+
+        return false;
+    };
+
+    function getKeyDef(context, element) {
+        let splitted = element.accessKey.split(getSplitterToElement(context, element));
+        let def = {
+            key: null,
+            ctrl: false,
+            shift: false,
+            alt: false,
+            meta: false,
+        };
+        splitted.forEach(key => {
+            switch (key.toLowerCase()) {
+                case 'ctrl':
+                    def.ctrl = true;
+                    break;
+                case 'shift':
+                    def.shift = true;
+                    break;
+                case 'alt':
+                    def.alt = true;
+                    break;
+                case 'meta':
+                    def.meta = true;
+                    break;
+                default:
+                    def.key = key.toUpperCase();
+                    break;
+            }
+        });
+
+        return def;
     }
 
-    logger('accesskey ready!', 'info');
+    function init() {
+
+        getContexts().forEach(context => {
+            let elements = context.querySelectorAll(':scope [accesskey]');
+
+            elements.forEach(element => {
+                if (context === isDescendantOfInternalContext(element)) {
+                    if (!ignoreAccessKey(context, element)) {
+                        context.addEventListener('keydown', (event) => {
+                            let keyDef = getKeyDef(context, element);
+                            if (event.key.toUpperCase() === keyDef.key && event.ctrlKey === keyDef.ctrl && event.shiftKey === keyDef.shift && event.altKey === keyDef.alt && event.metaKey === keyDef.meta) {
+                                if (stopPropagation(context, element)) {
+                                    event.stopPropagation();
+                                }
+        
+                                if (preventDefault(context, element)) {
+                                    event.preventDefault();
+                                }
+                                getHandlerToElement(context, element)(event, element, context);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+    function ignoreAccessKey(context, element) {
+        if (element.hasAttribute('accesskey-ignore')) {
+            return true;
+        }
+
+        if (context.hasAttribute('accesskey-ignore')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function stopPropagation(context, element) {
+        if (element.hasAttribute('accesskey-no-stop-propagation')) {
+            return false;
+        }
+
+        if (context.hasAttribute('accesskey-no-stop-propagation')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function preventDefault(context, element) {
+        if (element.hasAttribute('accesskey-no-prevent-default')) {
+            return false;
+        }
+
+        if (context.hasAttribute('accesskey-no-prevent-default')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function getHandlerToElement(context, element) {
+
+        if (element.hasAttribute('accesskey-handler')) {
+            let handlerName = element.getAttribute('accesskey-handler');
+            let handler = getRegisteredHandler(handlerName);
+            if (handler) return handler;
+            if (handlerName in window) return window[handlerName];
+        }
+
+        if (context.hasAttribute('accesskey-handler')) {
+            let handlerName = context.getAttribute('accesskey-handler');
+            let handler = getRegisteredHandler(handlerName);
+            if (handler) return handler;
+            if (handlerName in window) return window[handlerName];
+        }
+        return config.handler;
+    }
+    
+    function getSplitterToElement(context, element) {
+        if (element.hasAttribute('accesskey-splitter')) {
+            return element.getAttribute('accesskey-splitter');
+        }
+
+        if (context.hasAttribute('accesskey-splitter')) {
+            return context.getAttribute('accesskey-splitter');
+        }
+
+        return config.splitter;
+    }
+
+    function getContexts() {
+        let contexts = document.querySelectorAll('[accesskey-context]');
+        if (contexts.length === 0) {
+             throw new Error('No accesskey contexts found!');
+        }
+        return contexts;
+    }
+
+    function setGlobalHandler(handler) {
+        config.handler = handler;
+        return this;
+    }
+
+    return {
+        init,
+        setGlobalHandler,
+        registerHandler,
+        setGlobalSplitter,
+    };
 };

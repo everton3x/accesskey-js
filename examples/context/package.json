@@ -1,5 +1,5 @@
 {
-  "name": "advanced",
+  "name": "sample",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,6 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
-    "accesskey-js": "^1.0.0"
+    "accesskey-js": "^2.0.0-dev"
   }
 }
