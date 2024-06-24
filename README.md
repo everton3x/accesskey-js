@@ -138,6 +138,12 @@ In addition to these methods (which must be called after `accesskey()` and befor
 
 **AccessKey.js** only uses javascript code (Vanilla JS), so it should work properly in the modern browsers.
 
+## Getting help
+
+Need help? Check out our [Wiki](https://github.com/everton3x/accesskey-js/wiki). There you will find troubleshooting tips and more code examples.
+
+You didn't find what you needed on the Wiki, open an issue or contact the contributors directly.
+
 ## Contributing
 
 Contributions are welcome. If you find a bug or have a suggestion for improvement, please consider opening an [issue](https://github.com/everton3x/accesskey-js/issues).
